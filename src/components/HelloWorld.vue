@@ -1,58 +1,106 @@
+<script setup>
+import { ref, computed } from "vue";
+
+const formData = ref({
+  name: "",
+  email: "",
+  password: "",
+});
+
+const isNameValid = computed(() => formData.value.name.trim() !== "");
+const isEmailValid = computed(() =>
+  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.value.email)
+);
+const isPasswordValid = computed(() => formData.value.password.length >= 8);
+
+const isFormValid = computed(
+  () => isNameValid.value && isEmailValid.value && isPasswordValid.value
+);
+
+const submitForm = () => {
+  if (isFormValid.value) {
+    // Perform form submission logic here
+    console.log("Form submitted!", formData.value);
+  } else {
+    console.log("Form is invalid. Please check the fields.");
+  }
+};
+</script>
+
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
+  <div>
+    <form @submit.prevent="submitForm" class="custom-form">
+      <div class="form-group">
+        <label for="name">Name:</label>
+        <input v-model="formData.name" type="text" id="name" />
+        <span v-if="!isNameValid" class="error">Name is required</span>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input v-model="formData.email" type="email" id="email" />
+        <span v-if="!isEmailValid" class="error"
+          >Please enter a valid email address</span
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input v-model="formData.password" type="password" id="password" />
+        <span v-if="!isPasswordValid" class="error"
+          >Password must be at least 8 characters</span
+        >
+      </div>
+
+      <button type="submit" :disabled="!isFormValid" class="submit-button">
+        Submit
+      </button>
+    </form>
   </div>
 </template>
 
-<script>
-export default {
-  name: 'HelloWorld',
-  props: {
-    msg: String
-  }
-}
-</script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h3 {
-  margin: 40px 0 0;
+.custom-form {
+  max-width: 400px;
+  margin: 0 auto;
 }
-ul {
-  list-style-type: none;
-  padding: 0;
+
+.form-group {
+  margin-bottom: 20px;
 }
-li {
-  display: inline-block;
-  margin: 0 10px;
+
+label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
 }
-a {
-  color: #42b983;
+
+input {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.error {
+  color: #e74c3c;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+.submit-button {
+  padding: 10px 15px;
+  font-size: 16px;
+  background-color: #3498db;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.submit-button:disabled {
+  background-color: #bdc3c7;
+  cursor: not-allowed;
 }
 </style>
